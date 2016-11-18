@@ -18,7 +18,7 @@ _Notes_: For the sake of performance and simplicity, soft-clipping is performed 
 
 *Required arguments*
 - **-b** _FILE_: indexed BAM alignment file
-- **-p** _FILE_: BEDPE file of primer pair locations [BEDPE format description](http://bedtools.readthedocs.io/en/latest/content/general-usage.html#bedpe-format)
+- **-p** _FILE_: [BEDPE](http://bedtools.readthedocs.io/en/latest/content/general-usage.html#bedpe-format) file of primer pair locations
 
 *Options*
 - **-n** _INT_: number of threads for clipprimer.pl (the workhorse Perl script of BAMClipper) and two samtools sort instances [1]
