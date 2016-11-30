@@ -42,7 +42,3 @@ chr1	36931667	36931695	chr1	36931911	36931937
 Citation
 --------
 Au CH, Ho DN, Kwong A, Chan TL and Ma ESK, 2016. _(submitted)_
-
-License
--------
-Source code released for non-commercial use only. For commercial use and other licensing enquiries, please contact Dr. Edmond S.K. Ma (<eskma@hksh.com>), Hong Kong Sanatorium and Hospital.
