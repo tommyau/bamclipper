@@ -27,17 +27,27 @@ _Notes_: For the sake of performance and simplicity, soft-clipping is performed 
 - **-u** _INT_: number of nucleotide upstream to 5' most nucleotide of primer (in addition to 5' most nucleotide of primer) for assigning alignments to primers based on the alignment starting position. [1]
 - **-d** _INT_: number of nucleotide downstream to 5' most nucleotide of primer (in addition to 5' most nucleotide of primer) for assigning alignments to primers based on the alignment starting position. [5]
 
-### Example
+### Example using demo data
 ```bash
 # Clip primers by BAMClipper
->./bamclipper.sh -b sample1.bam -p trusight_myeloid.bedpe -n 12
+>./bamclipper.sh -b examples/SRR2075598.bam -p examples/trusight_myeloid.bedpe -n 4
 # done!
-# sample1.primerclipped.bam and its index sample1.primerclipped.bam.bai will be generated.
+# SRR2075598.primerclipped.bam and its index SRR2075598.primerclipped.bam.bai are generated.
 
-# Show an example line of primer pair BEDPE file
->head -1 trusight_myeloid.bedpe
-chr1	36931667	36931695	chr1	36931911	36931937
+# the new SRR2075598.primerclipped.bam should be identical to the provided example (compare checksum of alignments and ignore headers)
+>samtools view SRR2075598.primerclipped.bam | md5sum
+4bcec847fe46649d127767fca9c3084a  -
+>samtools view examples/SRR2075598.primerclipped.bam | md5sum
+4bcec847fe46649d127767fca9c3084a  -
+
+# An example line of primer pair BEDPE file (an amplicon targeting ASXL1)
+>grep 31022896 trusight_myeloid.bedpe
+chr20   31022896        31022921        chr20   31023096        31023123
 ```
+Details of demo data:
+- **examples/SRR2075598.bam**: original BWA-MEM v0.7.7 alignments of a TruSight Myeloid panel dataset (first 100 read pairs of [SRR2075598](https://trace.ncbi.nlm.nih.gov/Traces/sra/?run=SRR2075598)) (reference: hg19)
+- **examples/SRR2075598.primerclipped.bam**: primer-clipped alignments
+- **examples/trusight_myeloid.bedpe**: primer locations derived from manufacturer's TruSight-Myeloid-Manifest.txt
 
 Citation
 --------
