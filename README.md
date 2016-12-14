@@ -41,7 +41,7 @@ _Notes_: For the sake of performance and simplicity, soft-clipping is performed 
 4bcec847fe46649d127767fca9c3084a  -
 
 # An example line of primer pair BEDPE file (an amplicon targeting ASXL1)
->grep 31022896 trusight_myeloid.bedpe
+>grep 31022896 examples/trusight_myeloid.bedpe
 chr20   31022896        31022921        chr20   31023096        31023123
 ```
 Details of demo data:
