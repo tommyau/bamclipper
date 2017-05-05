@@ -52,4 +52,4 @@ fi
 SCRIPT_PATH="$(readlink -f $0)"
 SCRIPT_DIR="$(dirname $SCRIPT_PATH)"
 
-"$SAMTOOLS" sort -n -T ${BAMbn}.sort1 -@ "$NTHREAD" $BAM | "$SAMTOOLS" view -h | "$SCRIPT_DIR"/injectseparator.pl | "$PARALLEL" -j "$NTHREAD" --keep-order --remove-rec-sep --pipe --remove-rec-sep --recend '__\n' --block 1m "$SCRIPT_DIR/clipprimer.pl --in $BEDPE --upstream $UPSTREAM --downstream $DOWNSTREAM" | "$SAMTOOLS" sort -T ${BAMbn}.sort2 -l 0 -@ "$NTHREAD" > ${BAMbn%.bam}.primerclipped.bam && "$SAMTOOLS" index ${BAMbn%.bam}.primerclipped.bam
+"$SAMTOOLS" collate -O --output-fmt SAM $BAM ${BAMbn}.sort1 | "$SCRIPT_DIR"/injectseparator.pl | "$PARALLEL" -j "$NTHREAD" --keep-order --remove-rec-sep --pipe --remove-rec-sep --recend '__\n' --block 1m "$SCRIPT_DIR/clipprimer.pl --in $BEDPE --upstream $UPSTREAM --downstream $DOWNSTREAM" | "$SAMTOOLS" sort -T ${BAMbn}.sort2 -@ "$NTHREAD" > ${BAMbn%.bam}.primerclipped.bam && "$SAMTOOLS" index ${BAMbn%.bam}.primerclipped.bam

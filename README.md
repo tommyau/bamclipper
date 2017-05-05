@@ -36,9 +36,9 @@ _Notes_: For the sake of performance and simplicity, soft-clipping is performed 
 
 # the new SRR2075598.primerclipped.bam should be identical to the provided example (compare checksum of alignments and ignore headers)
 >samtools view SRR2075598.primerclipped.bam | md5sum
-4bcec847fe46649d127767fca9c3084a  -
+6a431457fd6e892646c17d1c3029c24e  -
 >samtools view examples/SRR2075598.primerclipped.bam | md5sum
-4bcec847fe46649d127767fca9c3084a  -
+6a431457fd6e892646c17d1c3029c24e  -
 
 # An example line of primer pair BEDPE file (an amplicon targeting ASXL1)
 >grep 31022896 examples/trusight_myeloid.bedpe
