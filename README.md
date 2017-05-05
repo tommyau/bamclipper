@@ -5,8 +5,8 @@ Remove gene-specific primer sequences from SAM/BAM alignments of PCR amplicons b
 [Download latest version in a ZIP package](https://github.com/tommyau/bamclipper/zipball/master)
 
 ### Dependencies, as tested on 64-bit CentOS 5.5
-* [SAMtools](http://www.htslib.org/download/) (version 1.3 tested)
-* [GNU Parallel](http://www.gnu.org/software/parallel/) (version 20130522 tested)
+* [SAMtools](http://www.htslib.org/download/) (at least version 1.3.1)
+* [GNU Parallel](http://www.gnu.org/software/parallel/) (at least version 20130522)
 
 ### Usage
 `bamclipper.sh` soft-clips gene-specific primers from BAM alignment file based on *genomic coordinates* of primer pairs in BEDPE format.
@@ -21,7 +21,7 @@ _Notes_: For the sake of performance and simplicity, soft-clipping is performed 
 - **-p** _FILE_: [BEDPE](http://bedtools.readthedocs.io/en/latest/content/general-usage.html#bedpe-format) file of primer pair locations
 
 *Options*
-- **-n** _INT_: number of threads for clipprimer.pl (the workhorse Perl script of BAMClipper) and two samtools sort instances [1]
+- **-n** _INT_: number of threads for clipprimer.pl (the workhorse Perl script of BAMClipper) and samtools sort [1]
 - **-s** _FILE_: path to samtools executable [samtools]
 - **-g** _FILE_: path to gnu parallel executable [parallel]
 - **-u** _INT_: number of nucleotide upstream to 5' most nucleotide of primer (in addition to 5' most nucleotide of primer) for assigning alignments to primers based on the alignment starting position. [1]
