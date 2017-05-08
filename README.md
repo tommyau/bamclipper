@@ -51,4 +51,4 @@ Details of demo data:
 
 Citation
 --------
-Au CH, Ho DN, Kwong A, Chan TL and Ma ESK, 2016. _(submitted)_
+Au CH, Ho DN, Kwong A, Chan TL and Ma ESK, 2017. [BAMClipper: removing primers from alignments to minimize false-negative mutations in amplicon next-generation sequencing](http://www.nature.com/articles/s41598-017-01703-6). _Scientific Reports_ 7:1567  (doi:10.1038/s41598-017-01703-6)
