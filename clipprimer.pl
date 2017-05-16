@@ -13,6 +13,7 @@ my $bedpe;
 my $debug = 0;
 my $window_upstream = 1;
 my $window_downstream = 5;
+my $sam_header_block_seen = 0;
 GetOptions ("in=s" => \$bedpe,
 	    "phredoffset=i" => \$phredoffset,
 	    "upstream=i" => \$window_upstream,
@@ -20,6 +21,7 @@ GetOptions ("in=s" => \$bedpe,
 	    "debug" => \$debug,);
 my %position2amplicon_positive;
 my %position2amplicon_negative;
+my %sam_header_reference_sequence;
 my $bedpe_fh = IO::File->new($bedpe) || die "ERROR: failed to open .bedpe panel description file";
 BEDPE:while (<$bedpe_fh>) {
     chomp;
@@ -29,6 +31,7 @@ BEDPE:while (<$bedpe_fh>) {
     my $name = scalar @fields >= 7 ? $fields[6] : join("-",@fields[0..5]);
     # lookup up table from position to amplicon
     # 1-based pos of left and right primers
+    die "ERROR: left and right primers come from different reference sequences" if $fields[0] ne $fields[3];
     my $primers = [$fields[0], $fields[1]+1, $fields[2], $fields[3], $fields[4]+1, $fields[5], $name];
     OFFSET:foreach my $offset ($window_upstream * -1 .. $window_downstream) {
         $position2amplicon_positive{$fields[0]}{$fields[1]+1+$offset} = $primers;
@@ -47,7 +50,20 @@ LINE:while (<>) {
     if (length($line) == 0 || substr($line,0,1) eq "@") {
 	# SAM header lines
 	print $original_line;
+	
+	# extract reference sequence names
+	if ($line =~ /^\@SQ\t.*SN:([\!-\)\+-\<\>-\~][\!-\~]*)/) {
+		$sam_header_reference_sequence{$1} = 1;
+		$sam_header_block_seen = 1;
+	}
+	
 	next LINE;
+    }
+    if ($sam_header_block_seen && $current_readname eq "") {
+	# compare reference sequence names: SAM header versus primer panel
+	foreach my $refseq (keys %position2amplicon_positive) {
+	    warn "WARNING: Reference sequence '$refseq' is defined in BEDPE but not in the provided SAM alignment header" if !exists $sam_header_reference_sequence{$refseq};
+	}
     }
     my @output;
     my @fields = split("\t", $line);
