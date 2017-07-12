@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # bamclipper.sh
-VERSION=1.1.0
+VERSION=1.1.1
 NTHREAD=1
 SAMTOOLS="samtools"
 PARALLEL="parallel"
@@ -68,12 +68,12 @@ while getopts ":ib:p:n:s:g:u:d:" o; do
 	    ;;
 	u)
 	    UPSTREAM=${OPTARG}
-	    [[ "$UPSTREAM" =~ '^[0-9]+$' ]] || error "UPSTREAM requires non-negative integer"
+	    [[ "$UPSTREAM" =~ ^[0-9]+$ ]] || error "UPSTREAM requires non-negative integer"
 	    [[ "$UPSTREAM" -ge 0 ]] || error "UPSTREAM requires non-negative integer"
 	    ;;
 	d)
 	    DOWNSTREAM=${OPTARG}
-	    [[ "$DOWNSTREAM" =~ '^[0-9]+$' ]] || error "DOWNSTREAM requires non-negative integer"
+	    [[ "$DOWNSTREAM" =~ ^[0-9]+$ ]] || error "DOWNSTREAM requires non-negative integer"
 	    [[ "$DOWNSTREAM" -ge 0 ]] || error "DOWNSTREAM requires non-negative integer"
 	    ;;
 	*)
