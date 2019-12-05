@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 # bamclipper.sh
-VERSION=1.1.1
+VERSION=1.1.2
 NTHREAD=1
 SAMTOOLS="samtools"
 PARALLEL="parallel"
 UPSTREAM=1
 DOWNSTREAM=5
+OUTPUT=$PWD
 SAMTOOLS_VERSION_REQUIRED=1.3.1
 PARALLEL_VERSION_REQUIRED=20130522
 
@@ -33,6 +34,7 @@ if [[ "$#" -eq 0 ]]; then
     echo >&2 "    -g FILE    path to gnu parallel executable [$PARALLEL]"
     echo >&2 "    -u INT     number of nucleotide upstream to 5' most nucleotide of primer [$UPSTREAM]"
     echo >&2 "    -d INT     number of nucleotide downstream to 5' most nucleotide of primer [$DOWNSTREAM]"
+    echo >&2 "    -o DIR     path to write output [$OUTPUT]"
     exit 1
 fi
 
@@ -41,7 +43,7 @@ function error {
     exit 1
 }
 
-while getopts ":ib:p:n:s:g:u:d:" o; do
+while getopts ":ib:p:n:s:g:u:d:o:" o; do
     case "${o}" in
 	i)
 	    PIPE=1
@@ -76,6 +78,10 @@ while getopts ":ib:p:n:s:g:u:d:" o; do
 	    [[ "$DOWNSTREAM" =~ ^[0-9]+$ ]] || error "DOWNSTREAM requires non-negative integer"
 	    [[ "$DOWNSTREAM" -ge 0 ]] || error "DOWNSTREAM requires non-negative integer"
 	    ;;
+	o)
+	    OUTPUT=${OPTARG}
+	    [[ ! -d "$OUTPUT" ]] && error "OUTPUT is not a valid directory ($OUTPUT)."
+	    ;;
 	*)
 	    error "Invalid option: -$OPTARG"
 	    ;;
@@ -87,6 +93,9 @@ shift $((OPTIND-1))
 ([[ -z "$BAM" ]] && [[ -z "$PIPE" ]]) && error "BAM file (-b) or Pipe mode (-i) is not defined"
 ([[ ! -z "$BAM" ]] && [[ "$PIPE" == 1 ]]) && error "File mode (-b) and Pipe mode (-i) cannot be defined simultaneously"
 [[ -z "$BEDPE" ]] && error "BEDPE file (-p) is not defined"
+
+# Absolute path for output
+OUTPUT=$(readlink -e $OUTPUT)
 
 # check parallel & version
 "$PARALLEL" --minversion $PARALLEL_VERSION_REQUIRED >/dev/null 2>&1 || error "GNU Parallel (provided path: $PARALLEL) is not running properly. Please check the path and/or version (at least $PARALLEL_VERSION_REQUIRED)."
@@ -105,5 +114,5 @@ else
     SAMTOOLS_VERSION=`"$SAMTOOLS" --version-only`
     [ "$(version "$SAMTOOLS_VERSION")" -lt "$(version "$SAMTOOLS_VERSION_REQUIRED")" ] && error "SAMtools version ($SAMTOOLS_VERSION) is not supported (supported version: at least $SAMTOOLS_VERSION_REQUIRED)."
 
-    "$SAMTOOLS" collate -O --output-fmt SAM "$BAM" "${BAMbn}.sort1" | "$SCRIPT_DIR"/injectseparator.pl | "$PARALLEL" -j "$NTHREAD" --keep-order --remove-rec-sep --pipe --remove-rec-sep --recend '__\n' --block 10M "$SCRIPT_DIR/clipprimer.pl --in $BEDPE --upstream $UPSTREAM --downstream $DOWNSTREAM" | "$SAMTOOLS" sort -T "${BAMbn}.sort2" -@ "$NTHREAD" > "${BAMbn%.bam}.primerclipped.bam" && "$SAMTOOLS" index "${BAMbn%.bam}.primerclipped.bam"
+    "$SAMTOOLS" collate -O --output-fmt SAM "$BAM" "${BAMbn}.sort1" | "$SCRIPT_DIR"/injectseparator.pl | "$PARALLEL" -j "$NTHREAD" --keep-order --remove-rec-sep --pipe --remove-rec-sep --recend '__\n' --block 10M "$SCRIPT_DIR/clipprimer.pl --in $BEDPE --upstream $UPSTREAM --downstream $DOWNSTREAM" | "$SAMTOOLS" sort -T "${BAMbn}.sort2" -@ "$NTHREAD" > "${OUTPUT}/${BAMbn%.bam}.primerclipped.bam" && "$SAMTOOLS" index "${OUTPUT}/${BAMbn%.bam}.primerclipped.bam"
 fi
