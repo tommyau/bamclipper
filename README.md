@@ -26,6 +26,7 @@ _Notes_: For the sake of performance and simplicity, soft-clipping is performed 
 - **-g** _FILE_: path to gnu parallel executable [parallel]
 - **-u** _INT_: number of nucleotide upstream to 5' most nucleotide of primer (in addition to 5' most nucleotide of primer) for assigning alignments to primers based on the alignment starting position. [1]
 - **-d** _INT_: number of nucleotide downstream to 5' most nucleotide of primer (in addition to 5' most nucleotide of primer) for assigning alignments to primers based on the alignment starting position. [5]
+- **-o** _DIR_: path to write output [current directory]
 
 ### Example using demo data
 ```bash
